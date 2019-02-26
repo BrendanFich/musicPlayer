@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+	<meta charset="UTF-8">
+	<title>musicPlayer</title>
+	<link rel="stylesheet" href="css/common.css">
+	<link rel="stylesheet" href="css/reset.css">
+	<link rel="stylesheet" href="css/index.css">
+	<link rel="stylesheet" href="https://at.alicdn.com/t/font_1051136_qigaqspv06.css">
+	<link href="img/favicon.ico" rel="shortcut icon">
+</head>
+<body>
+	<div class="cover"></div>
+	<div class="musicbox">
+		<div class="music-panel">
+			<div class="music">
+				<div class="control">
+					<i class="back iconfont icon-shangyishou"></i>
+					<i class="play iconfont icon-zanting"></i>
+					<i class="forward iconfont icon-xiayishou"></i>
+				</div>
+				<div class="info">
+					<div class="title">歌名</div>
+					<div class="author">作者</div>
+				</div>
+			</div>
+			<div class="progress">
+				<div class="bar">
+					<div class="progress-total"></div>
+					<div class="progress-now"></div>
+				</div>
+				<div class="time">00:00</div>
+			</div>
+		</div>
+		<div class="list">
+			<ul>
+				
+			</ul>
+		</div>
+	</div>
+
+	<script>
+	var musicList = [{
+		"index":0,
+	  "src": "http://cloud.hunger-valley.com/music/玫瑰.mp3",
+	  "title": "玫瑰1",
+	  "author": "贰佰",
+	  "img": "http://cloud.hunger-valley.com/17-9-22/28212907.jpg"
+	}, {
+		"index":1,
+	  "src": "http://cloud.hunger-valley.com/music/ifyou.mp3",
+	  "title": "IFYOU1",
+	  "author": "Big Bang",
+	  "img": "http://k-popped.com/kpopped2012/wp-content/uploads/2015/05/BIGBANG-2015.jpg"
+	},{
+		"index":2,
+	  "src": "http://cloud.hunger-valley.com/music/玫瑰.mp3",
+	  "title": "玫瑰2",
+	  "author": "贰佰",
+	  "img": "http://cloud.hunger-valley.com/17-9-22/28212907.jpg"
+	},{
+		"index":3,
+	  "src": "http://cloud.hunger-valley.com/music/ifyou.mp3",
+	  "title": "IFYOU2",
+	  "author": "Big Bang",
+	  "img": "http://k-popped.com/kpopped2012/wp-content/uploads/2015/05/BIGBANG-2015.jpg"
+	}]
+	var currentIndex = 0
+	var audio = new Audio()
+	audio.autoplay = true
+	audio.volume = 0.1
+
+	function getMusicList(){
+		generateList(musicList)
+		loadMusic(musicList[currentIndex])
+	}
+	getMusicList()
+	audio.onplay = function(){
+		clock = setInterval(function(){
+			$('.progress-now').style.width = (audio.currentTime / audio.duration) * 100 + '%'
+			var minute = Math.floor(audio.currentTime / 60)
+			var second = Math.floor(audio.currentTime % 60)
+			if(minute < 10){	minute = '0' + minute	}
+			if(second < 10){	second = '0' + second	}
+			$('.time').innerText = minute + ':' + second
+		}, 50)
+	}
+	audio.onpause = function(){
+		clearInterval(clock)
+	}
+	audio.onended = function(){
+		currentIndex = (++currentIndex) % musicList.length
+		loadMusic(musicList[currentIndex])
+
+	}
+	$('ul').onclick = function(e){
+		for(var index in musicList){
+				$('.' + musicList[index].title).style.color = '#dcdde4'
+			}
+		for(var index in musicList){
+			if(musicList[index].title == e.target.className){
+				$('.' + e.target.className).style.color = '#b82525'
+				loadMusic(musicList[index])
+			}
+		}
+		if(audio.paused){
+			$('.play').classList.remove('icon-bofang')
+			$('.play').classList.add('icon-zanting')
+		}
+
+	}
+	$('.play').onclick = function(e){
+		if(audio.paused){
+			audio.play()
+			this.classList.remove('icon-bofang')
+			this.classList.add('icon-zanting')
+		}else{
+			audio.pause()
+			this.classList.remove('icon-zanting')
+			this.classList.add('icon-bofang')
+		}
+	}
+	$('.forward').onclick = function(e){
+		currentIndex = (++currentIndex) % musicList.length
+		loadMusic(musicList[currentIndex])
+		if(audio.paused){
+			$('.play').classList.remove('icon-bofang')
+			$('.play').classList.add('icon-zanting')
+		}
+
+	}
+	$('.back').onclick = function(e){
+		currentIndex = (--currentIndex + musicList.length) % musicList.length
+		loadMusic(musicList[currentIndex])
+		if(audio.paused){
+			$('.play').classList.remove('icon-bofang')
+			$('.play').classList.add('icon-zanting')
+		}
+	}
+	$('.bar').onclick = function(e){
+		$('.progress-now').style.width = (e.offsetX / parseInt(getComputedStyle(this).width))*100 + '%'
+		audio.currentTime = (e.offsetX / parseInt(getComputedStyle(this).width))*audio.duration
+	}
+
+	function $(selector){
+		return document.querySelector(selector)
+	}
+	//function getMusicList(callback){
+	// 	var xhr = new XMLHttpRequest()
+	// 	xhr.open('GET', '/music.json', true)
+	// 	xhr.onload = function(){
+	// 		if((xhr.status >= 200 && xhr.status <300) || xhr.status === 304){
+	// 			callback(JSON.parse(this.responseText))
+	// 		}else{
+	// 			console.log('获取数据失败')
+	// 		}
+	// 		xhr.onerror = function(){
+	// 			console.log('网络异常')
+	// 		}
+	// 	}
+	// 	xhr.send()
+	// }
+	function loadMusic(musicObj){
+		audio.src = musicObj.src
+		$('.title').innerText = musicObj.title
+		$('.author').innerText = musicObj.author
+		$('.cover').style.background = 'url(' + musicObj.img + ')' + ' center center no-repeat'
+		for(var index in musicList){
+				$('.' + musicList[index].title).style.color = '#dcdde4'
+			}
+		$('.' + musicObj.title).style.color = '#b82525'
+	}
+
+	function generateList(list){
+		for(var index in list){
+			var li = document.createElement("li")
+			li.setAttribute('class', list[index].title)
+			li.innerText = list[index].title
+			$('ul').appendChild(li)
+		}
+		$('.' + list[0].title).style.color = '#b82525'
+
+	}
+	</script>
+</body>
+</html>

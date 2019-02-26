@@ -1,0 +1,25 @@
+[{
+	"index":0,
+  "src": "http://cloud.hunger-valley.com/music/玫瑰.mp3",
+  "title": "玫瑰1",
+  "author": "贰佰",
+  "img": "http://cloud.hunger-valley.com/17-9-22/28212907.jpg"
+}, {
+	"index":1,
+  "src": "http://cloud.hunger-valley.com/music/ifyou.mp3",
+  "title": "IFYOU1",
+  "author": "Big Bang",
+  "img": "http://k-popped.com/kpopped2012/wp-content/uploads/2015/05/BIGBANG-2015.jpg"
+},{
+	"index":2,
+  "src": "http://cloud.hunger-valley.com/music/玫瑰.mp3",
+  "title": "玫瑰2",
+  "author": "贰佰",
+  "img": "http://cloud.hunger-valley.com/17-9-22/28212907.jpg"
+},{
+	"index":3,
+  "src": "http://cloud.hunger-valley.com/music/ifyou.mp3",
+  "title": "IFYOU2",
+  "author": "Big Bang",
+  "img": "http://k-popped.com/kpopped2012/wp-content/uploads/2015/05/BIGBANG-2015.jpg"
+}]
